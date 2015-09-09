@@ -18,15 +18,16 @@ ss = np.array([0.,0.,0.])
 em = 5.98000e24
 sm = 1.98855e30
 
-steps = 365
-secs  = 24. * 3600.
+steps = 730
+secs  = 365 * 24. * 3600. / steps
 
 def gravetat(pos1, pos2, m1, m2):
     r = pos1 - pos2
     rm = np.linalg.norm(r)
-    f = -1.0 * G * m1 * m2 * r / rm**3
+    c = -1.0 * G * m1 * m2 / rm**3
+    f = c * r
     return f
-    
+
 def newvel(v, a, t):
     return v + a*t
     
@@ -44,7 +45,7 @@ points[0,1] = er[1]
 for i in range(1,steps):
     print("earth pos= {0:10.7},{1:10.7},{2:10.7}").format(r0[0], r0[1], r0[2])
     f0 = gravetat(r0, r1, em, sm)
-    f1 = - f0
+    f1 = -1.0 * f0
     a0 = f0 / em
     a1 = f1 / sm
     v0 = newvel(v0, a0, secs)
