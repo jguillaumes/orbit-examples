@@ -1,3 +1,6 @@
+using PyPlot
+
+
 # Universal gravitation constant
 const G = 6.67e-11
 
@@ -64,6 +67,5 @@ for i in 1:nintv
 end
 
 # Plot both orbits
-using PyPlot
 scatter(C1[1:nintv,1],C1[1:nintv,2],marker=".")
 scatter(C2[1:nintv,1],C2[1:nintv,2],marker=",")
