@@ -4,5 +4,6 @@ orbits:	orbits.hs Vec3.hs
 
 clean:	
 	-rm *.o
+	-rm *.hi
 	-rm orbits
 
