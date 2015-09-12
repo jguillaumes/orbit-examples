@@ -1,30 +1,56 @@
+#
+# Basic two-body orbit simularion written in julia
+#
 using PyPlot
 
 
 # Universal gravitation constant
 const G = 6.67e-11
 
-# Earth and sun mass
-const Earth = 5.97e24
-const Sun  = 1.98855E30
+#
+# Read speed, position and mass of first body
+#
+linia = readline()
+pos = split(strip(linia), " ")
+linia = readline()
+spd = split(strip(linia), " ")
+mass = strip(readline())
 
-# Earth-sun distace and orbital (tangent) speed
-const dist = 150.E09
-const ospeed = 029.658E03
+# Initialize and load position and velocity vectors
+r1 = zeros(3,1)
+v1 = zeros(3,1)
+for i in 1:3
+  r1[i] = float64(pos[i])
+  v1[i] = float64(spd[i])
+end
+# Initialize mass
+m1 = float64(mass)
 
-# Build position and velocity vectors for Earth and Sun
-# Sun is at (0,0,0), its speed is zero (for the sake of this example)
-# For generalization r1,v1 refer to first body, r2,v2 to second one
-r1 = [dist,0.,0.]
-v1 = [0.,ospeed,0.]
-r2 = [0.,0.,0.]
-v2 = [0.,0.,0.]
+#
+# Read speed, position and mass of second body
+#
+linia = readline()
+pos = split(strip(linia), " ")
+linia = readline()
+spd = split(strip(linia), " ")
+mass = strip(readline())
 
-# Time increment (in seconds) and number of increments
-# The total time will be a Year. Hence, if nintv = 365 our time increment
+# Initialize and load position and velocity vectors
+r2 = zeros(3,1)
+v2 = zeros(3,1)
+for i in 1:3
+  r2[i] = float64(pos[i])
+  v2[i] = float64(spd[i])
+end
+# Initialize mass
+m2 = float64(mass)
+
+# Time increment (in seconds) and number of steps
 # will be a day.
-nintv = 720
-dt = (365.0 * 24.0 * 3600.0) / convert(Float64,nintv)
+linia = readline()
+times = split(strip(linia), " ")
+nintv = int32(times[2])
+dt = float64(times[1])
 
 # Newton's formula for gravitational force
 function grav(r1,r2,m1,m2)
@@ -56,9 +82,9 @@ for i in 1:nintv
   C2[i,1] = r2[1]
   C2[i,2] = r2[2]
 
-  f1,f2 = grav(r1,r2,Earth,Sun)
-  a1 = accel(f1,Earth)
-  a2 = accel(f2,Sun)
+  f1,f2 = grav(r1,r2,m1,m2)
+  a1 = accel(f1,m1)
+  a2 = accel(f2,m2)
   v1 = applydt(v1,a1,dt)
   v2 = applydt(v2,a2,dt)
   r1 = applydt(r1,v1,dt)
