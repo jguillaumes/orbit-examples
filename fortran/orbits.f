@@ -1,97 +1,91 @@
-        program orbits
+C	*****************************************************************
+C	*	Compute a 2-body orbit                                  *
+C	*****************************************************************
+	
+        PROGRAM ORBITS
+	IMPLICIT NONE
 
-        implicit none
+	INTEGER*4 I
+	INTEGER J
+	INTEGER ILUN,OLUN
+	REAL*8  R0(3),R1(3)
+	REAL*8	F0(3),F1(3),A0(3),A1(3)
+	REAL*8	V0(3),V1(3)
+	INTEGER*4  N
+	REAL*8  M0,M1
+	REAL*8  DT
+	REAL*8	G,Q
 
-        integer*4 i,n
-        integer j
-        integer ilun,olun
-        real*8  r0(3),r1(3)
-        real*8  f0(3),f1(3),a0(3),a1(3)
-        real*8  v0(3),v1(3)
-        real*8  m0,m1
-        real*8  dt
-        real*8  g
-        real*8  neg
-        integer n3,incx
-        
-        data g  / 6.67384E-11 /
-        data n3,neg,incx /3,-1.0,1/
-        data ilun,olun /5,6/
-        common /consts/ G
+	DATA G /6.67384E-11/
+	DATA Q /1E06/
+	DATA ILUN,OLUN /5,6/
+	COMMON /CONSTS/ G
 
-800     format(a5,f10.0,a5,f10.0,a5,f10.0)
-801     format(i6,2(3(X,D18.9)))
-802     format(a6,2(3(X,A18)))
+ 800    FORMAT (A5,F10.0,A5,F10.0,A5,F10.0)
+ 801    FORMAT (i6,2(3(X,F18.8)))
+ 802	FORMAT (A6,2(3(X,A18)))
 
-900     format(3(F11.0))
-901     format(X,E11.5)
-902     format(X,F11.0,X,I6)
+ 900	FORMAT (3(X,F10.0))
+ 901	FORMAT (X,F10.0)
+ 902	FORMAT (X,F10.0,X,I10)
 
-        read(ilun,900) (R0(I),I=1,3)
-        read(ilun,900) (V0(I),I=1,3)
-        read(ilun,901) m0
+C	Read first body position
+	READ (ILUN,900) (R0(I),I=1,3)
 
-        read(ilun,900) (R1(I),I=1,3)
-        read(ilun,900) (V1(I),I=1,3)
-        read(ilun,901) m1
+C	Read first body velocity
+	READ (ILUN,900) (V0(I),I=1,3)
 
-        read(ilun,902) dt,n
+C	Read first body mass
+	READ (ILUN,901) M0
 
-        write(olun,802) ' NUM ','X0','Y0','Z0','X1','Y1','Z1'
+C	Read second body position
+	READ (ILUN,900) (R1(I),I=1,3)
 
-        do I=1,n
-           call gravf(r0,m0,r1,m1,f0)
-           
-*          f1 = -f0
-           call DCOPY(n3,f0,incx,f1,incx)
-           call DSCAL(n3,neg,f1,incx)
-           
-*          a0 = f0 / m0
-           call DCOPY(n3,f0,incx,a0,incx)
-           call DSCAL(n3,1/m0,a0,incx)
-*          a1 = f1 / m1
-           call DCOPY(n3,f1,incx,a1,incx)
-           call DSCAL(n3,1/m1,a1,incx)
+C	Read second body velocity
+	READ (ILUN,900) (V1(I),I=1,3)
 
-           call DAXPY(n3,dt,a0,incx,v0,incx)
-           call DAXPY(n3,dt,a1,incx,v1,incx)
-           call DAXPY(n3,dt,v0,incx,r0,incx)
-           call DAXPY(n3,dt,v1,incx,r1,incx)
+C	Read second body mass
+	READ (ILUN,901) M1
 
-           write(olun,801) I,(R0(J),J=1,3),(R1(J),J=1,3)
-        enddo
-        end
-      
-      subroutine gravf(a,am,b,bm,f)
-      implicit none
-      
-      DOUBLE PRECISION DNRM2
-*     real*8  vecmod
-      
-      real*8  a(3),b(3),am,bm,f(3)
-      real*8  r,coef
-      real*8  v(3)
-      real*8  g
-      integer n3,incx
-      real*8  neg
-      
-      data n3,neg,incx /3,-1.0,1/
-      common /consts/ g
-      
-*     v = a - b
-      call DCOPY(n3,a,incx,v,incx)
-      call DAXPY(n3,neg,b,incx,v,incx)
-*      print *,v
-      
-*     r = mod(v)
-      r = DNRM2(n3,v,incx)
-      coef = (-g*am*bm) / r**3
-*      print *,coef
-      
-*     f = coef * v
-      call DCOPY(n3,v,incx,f,incx)
-      call DSCAL(n3,coef,f,incx)
-*      print *,f
+C	Read time interval and number of steps
+	READ (ILUN,902) DT,N 
 
-      return
-      end
+	WRITE(OLUN,802) ' NUM ','X0','Y0','Z0','X1','Y1','Z1'
+
+	DO I=1,N
+	    CALL GRAVF(R0,M0,R1,M1,F0)
+	    CALL VECINV(F0,F1)
+	    CALL VECMUL(F0,1/M0,A0)
+	    CALL VECMUL(F1,1/M1,A1)
+	    DO J=1,3
+	        V0(J) = V0(J) + A0(J) * DT
+	        V1(J) = V1(J) + A1(J) * DT
+		R0(J) = R0(J) + V0(J) * DT
+		R1(J) = R1(J) + V1(J) * DT
+	    ENDDO
+	    WRITE(OLUN,801) I,(R0(J)/Q,J=1,3),(R1(J)/Q,J=1,3)
+	ENDDO
+	END
+
+C	*****************************************************************
+C	* Compute the gravitational force vector between to objects     *
+C	*****************************************************************
+	SUBROUTINE GRAVF(A, AM, B, BM, F)
+	IMPLICIT NONE
+
+	REAL*8	A(3),B(3),AM,BM,F(3)
+	REAL*8	R,COEF
+	REAL*8	V(3)
+	REAL*8	G
+	REAL*8 	MODUL
+
+	COMMON /CONSTS/ G
+
+	CALL VECSUB(A,B,V)
+
+	R = MODUL(V)
+	COEF = -1*G*AM / R**3
+	COEF = COEF * BM
+	CALL VECMUL(V,COEF,F)
+	RETURN
+	END
