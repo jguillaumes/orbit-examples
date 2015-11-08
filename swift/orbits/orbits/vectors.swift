@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Accelerate
 
 enum VecErrors: ErrorType {
     case InvalidParam
@@ -30,6 +31,11 @@ public class Vec3 : Streamable {
         }
     }
     
+    public func asArray() -> [Double] {
+        let res: [Double] = self.x
+        return res
+    }
+
     public func writeTo<Target : OutputStreamType>(inout target: Target) {
         let str = "[" +
             x.reduce("") { (a: String, b:Double) -> String in
@@ -45,7 +51,7 @@ public class Vec3 : Streamable {
     }
     
     public func modul() -> Double {
-        let m: Double = self.x.reduce(0) { $0 + $1*$1 }
+        let m: Double = self *% self
         
         return sqrt(m)
     }
@@ -59,35 +65,36 @@ public class Vec3 : Streamable {
 }
 
 public func +(v1 : Vec3, v2: Vec3) -> Vec3 {
-    var ret = [Double](count: 3, repeatedValue: 0)
+    let v1x : [Double] = v1.asArray()
+    var v2x : [Double] = v2.asArray()
     
-    for i in 0...2 {
-        ret[i] = v1.x[i] + v2.x[i]
-    }
+    cblas_daxpy(3, 1, v1x, 1, &v2x, 1)
 
-    return Vec3(v: ret);
+    return Vec3(v: v2x);
 }
 
 public func -(v1 : Vec3, v2: Vec3) -> Vec3 {
-    var ret = [Double](count: 3, repeatedValue: 0)
-    for i in 0...2 {
-        ret[i] = v1.x[i] - v2.x[i]
-    }
-    return Vec3(v: ret);
+    var v1x : [Double] = v1.asArray()
+    let v2x : [Double] = v2.asArray()
+    
+    cblas_daxpy(3, -1, v2x, 1, &v1x, 1)
+    
+    return Vec3(v: v1x);
 }
 
 public func *(v:Vec3, s:Double) -> Vec3 {
-    let a = v.x
-    let ret = a.map({ $0 * s })
-    return Vec3(v:ret);
+    let v1x : [Double] = v.asArray()
+    var second: [Double] = [0,0,0]
+    
+    cblas_daxpy(3, s, v1x, 1, &second, 1)
+    
+    return Vec3(v: second);
 }
 
 infix operator *% { associativity left precedence 150 }
 public func *% (v1: Vec3, v2: Vec3) -> Double {
     var c: Double = 0.0
     
-    for i in 0...2 {
-        c += v1.x[i] * v2.x[i]
-    }
+    c = cblas_ddot(3, v1.asArray(), 1, v2.asArray(), 1)
     return c
 }

@@ -35,7 +35,7 @@ var v2 = Vec3(x:0.0,y:0.0,z:0.0)
 let m1 = 5.98e24
 let m2 = 1.98855e30
 
-let nincr = 730
+let nincr = 365 * 4
 let dt: Double = (365.0*24.0*3600.0) / Double(nincr)
 
 for i in 1...nincr {
@@ -51,6 +51,7 @@ for i in 1...nincr {
     r1 = applydt(r1,c: v1,dt: dt)
     r2 = applydt(r2,c: v2,dt: dt)
     
-    print(r1)
+    let r1v = r1.asArray()
+    print(r1v[0],",",r1v[1],",",r1v[2])
 }
 

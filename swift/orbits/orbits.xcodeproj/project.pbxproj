@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F120A8C1BEF604000722F73 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F120A8B1BEF604000722F73 /* Accelerate.framework */; };
 		5F6C2C121BA5DCA20083F3E4 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C2C111BA5DCA20083F3E4 /* main.swift */; };
 		5F6C2C191BA5DCC70083F3E4 /* vectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C2C181BA5DCC70083F3E4 /* vectors.swift */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5F120A8B1BEF604000722F73 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5F6C2C0E1BA5DCA20083F3E4 /* orbits */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = orbits; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F6C2C111BA5DCA20083F3E4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5F6C2C181BA5DCC70083F3E4 /* vectors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = vectors.swift; path = /Users/jguillaumes/git/orbits/swift/orbits/orbits/vectors.swift; sourceTree = "<absolute>"; };
@@ -34,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F120A8C1BEF604000722F73 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +46,7 @@
 		5F6C2C051BA5DCA20083F3E4 = {
 			isa = PBXGroup;
 			children = (
+				5F120A8B1BEF604000722F73 /* Accelerate.framework */,
 				5F6C2C101BA5DCA20083F3E4 /* orbits */,
 				5F6C2C0F1BA5DCA20083F3E4 /* Products */,
 			);
