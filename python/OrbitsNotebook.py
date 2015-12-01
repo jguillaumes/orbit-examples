@@ -1,4 +1,11 @@
-# -*- coding: utf-8 -*-
+
+# coding: utf-8
+
+# # Simulació d'òrbites amb python (numpy)
+
+# In[1]:
+
+
 """
 Created on Thu Aug 27 21:52:35 2015
 
@@ -6,7 +13,6 @@ Created on Thu Aug 27 21:52:35 2015
 """
 
 import numpy as np
-from numpy import linalg as la
 import matplotlib.pyplot as plt
 
 G = 6.67384e-11
@@ -24,7 +30,7 @@ secs  = 365 * 24. * 3600. / steps
 
 def gravetat(pos1, pos2, m1, m2):
     r = pos1 - pos2
-    rm = la.norm(r)
+    rm = np.linalg.norm(r)
     c = -1.0 * G * m1 * m2 / rm**3
     f = c * r
     return f
@@ -56,6 +62,11 @@ for i in range(1,steps):
     points[i,0] = r0[0]
     points[i,1] = r0[1]
 
+
+# In[2]:
+
+get_ipython().magic('matplotlib inline')
+
 plt.plot(points[:,0], points[:,1])
 plt.grid(True)
 plt.axis([-1.25 * er[0], 1.25 * er[0], -1.25 * er[0], 1.25 * er[0]])
@@ -63,3 +74,4 @@ ax = plt.gca()
 ax.set_autoscale_on(False)
 plt.axes().set_aspect('equal','datalim')
 plt.show()
+
