@@ -1,0 +1,22 @@
+C       *****************************************************************
+C       * COMPUTE THE GRAVITATIONAL FORCE VECTOR BETWEEN TO OBJECTS     *
+C       *****************************************************************
+        SUBROUTINE GRAVF(A, AM, B, BM, F)
+
+
+        DOUBLE PRECISION        A(3),B(3),AM,BM,F(3)
+        DOUBLE PRECISION        R,COEF
+        DOUBLE PRECISION        V(3)
+        DOUBLE PRECISION        G
+        DOUBLE PRECISION        MODUL
+
+        COMMON /CONSTS/ G
+        CALL VECSUB(A,B,V)
+
+        R = MODUL(V)
+        COEF = -1*G*AM / R**2
+        COEF = COEF / R       
+        COEF = COEF * BM
+        CALL VECMUL(V,COEF,F)
+        RETURN
+        END

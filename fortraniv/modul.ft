@@ -1,0 +1,11 @@
+C ----------------------------------------------------------
+C       COMPUTE A VECTOR'S MODULUS
+C ----------------------------------------------------------
+        DOUBLE PRECISION FUNCTION MODUL(V)
+
+        DOUBLE PRECISION V(3)
+
+        MODUL = SQRT(V(1)**2 + V(2)**2 + V(3)**2)
+        RETURN
+        END
+

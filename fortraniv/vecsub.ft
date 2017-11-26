@@ -1,0 +1,13 @@
+C --------------------------------------------------------------
+C       SUBSTRACT A VECTOR FROM ANOTHER
+C --------------------------------------------------------------
+        SUBROUTINE VECSUB(A,B,R)
+
+        DOUBLE PRECISION        A(3),B(3),R(3)
+        INTEGER I                                      
+
+        DO 100 I=1,3
+            R(I) = A(I) - B(I)
+100     CONTINUE
+        RETURN
+        END

@@ -1,0 +1,13 @@
+C --------------------------------------------------------------
+C       MULTIPLY A VECTOR BY A SCALAR
+C --------------------------------------------------------------
+        SUBROUTINE VECMUL(O,S,D)
+
+        DOUBLE PRECISION O(3),S,D(3)
+        INTEGER I
+
+        DO 100 I=1,3
+            D(I) =S*O(I)
+100     CONTINUE
+        RETURN
+        END

@@ -1,0 +1,64 @@
+C       *****************************************************************
+C       *       Compute a 2-body orbit                                  *
+C       *****************************************************************
+
+        INTEGER I,N
+        INTEGER J
+        DOUBLE PRECISION  R0(3),R1(3)
+        DOUBLE PRECISION        F0(3),F1(3),A0(3),A1(3)
+        DOUBLE PRECISION        V0(3),V1(3)
+        DOUBLE PRECISION  D0(3),D1(3)
+        DOUBLE PRECISION  M0,M1
+        DOUBLE PRECISION  DT,FAC
+        DOUBLE PRECISION  G
+
+        FAC = 1E06
+        COMMON /CONSTS/ G
+        G = 6.67384E-11
+
+ 800    FORMAT (A5,F10.0,A5,F10.0,A5,F10.0)
+ 801    FORMAT (I6,2(3(1X,F14.4)))                            
+ 900    FORMAT (3(1X,F10.0))
+ 901    FORMAT (1X,F10.0)
+ 902    FORMAT (1X,F10.0,1X,I9)
+
+C       Read first body position
+        READ (4,900) (R0(I),I=1,3)
+
+C       Read first body velocity
+        READ (4,900) (V0(I),I=1,3)
+
+C       Read first body mass
+        READ (4,901) M0
+
+C       Read second body position
+        READ (4,900) (R1(I),I=1,3)
+
+C       Read second body velocity
+        READ (4,900) (V1(I),I=1,3)
+
+C       Read second body mass
+        READ (4,901) M1               
+
+C       Read time interval and number of steps
+        READ (4,902) DT,N
+
+C       WRITE(6,800) 'R01: ',R0(1),' R02:',R0(2),' R03:',R0(3)
+
+        DO 200 I=1,N
+            CALL GRAVF(R0,M0,R1,M1,F0)
+            CALL VECINV(F0,F1)
+            CALL VECMUL(F0,1/M0,A0)
+            CALL VECMUL(F1,1/M1,A1)
+            DO 100 J=1,3
+                V0(J) = V0(J) + A0(J) * DT
+                V1(J) = V1(J) + A1(J) * DT
+                R0(J) = R0(J) + V0(J) * DT
+                R1(J) = R1(J) + V1(J) * DT
+                D0(J) = R0(J) / FAC
+                D1(J) = R1(J) / FAC
+100         CONTINUE
+            WRITE(4,801) I,(D0(J),J=1,3),(D1(J),J=1,3)
+200     CONTINUE                                              
+        STOP
+        END

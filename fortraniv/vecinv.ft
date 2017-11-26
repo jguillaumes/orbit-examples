@@ -1,0 +1,9 @@
+C --------------------------------------------------------------
+C       INVERT A VECTOR (NEGATE ITS COMPONENTS)
+C --------------------------------------------------------------
+        SUBROUTINE VECINV(O,D)
+
+        DOUBLE PRECISION O(3),D(3)
+        CALL VECMUL(O,-1.0D0,D)                   
+        RETURN
+        END
